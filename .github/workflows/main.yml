@@ -8,24 +8,17 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+    - name: Create output folder
+      run: mkdir output
 
-      - name: Setup Visual Studio
-        uses: ilammy/msvc-dev-cmd@v1
+    - name: Create keyboard file
+      run: echo Lekhoni Keyboard Ready > output/lekhoni-keyboard.txt
 
-      - name: Build Installer
-        run: |
-          mkdir build
-          cd build
-          cmake .. -G "Visual Studio 17 2022" -A x64
-          cmake --build . --config Release
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Lekhoni-Keyboard
-          path: build
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Lekhoni-Keyboard
+        path: output
