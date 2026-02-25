@@ -1,40 +1,34 @@
-name: DEPLOY
+name: Build Lekhoni Keyboard
 
 on:
-  push:
-    branches: [ '**' ]
-    tags-ignore: [ '**' ]
+  workflow_dispatch:
 
 jobs:
   build:
-    if: contains(github.event.head_commit.message, 'deploy+') || contains(github.event.head_commit.message, 'pkg+')
-    strategy:
-      matrix:
-        container: [ "ubuntu:20.04", "ubuntu:22.04", "ubuntu:24.04", "ubuntu:25.04", "debian:12", "debian:13", "fedora:40", "fedora:41", "fedora:42", "archlinux:latest" ]
-        # this list should be updated from time to time by consulting these pages:
-        # https://releases.ubuntu.com/
-        # https://wiki.debian.org/DebianReleases#Production_Releases
-        # https://en.wikipedia.org/wiki/Fedora_Linux_release_history#Release_history
-    runs-on: "ubuntu-latest"
-    container:
-      image: ${{ matrix.container }}
-      env:
-        DIST: ${{ matrix.container }}
-        DEBIAN_FRONTEND: noninteractive
+    runs-on: windows-latest
+
     steps:
-      - name: install-git
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup Visual Studio
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build Installer
         run: |
-          # Install Git based on distro
-          if command -v apt-get >/dev/null; then
-            apt-get update -y
-            apt-get install -y git
-          elif command -v dnf >/dev/null; then
-            dnf install -y git
-          elif command -v zypper >/dev/null; then
-            zypper install -y git
-          elif command -v pacman >/dev/null; then
-            pacman -Sy git --noconfirm
-          fi
+          mkdir build
+          cd build
+          cmake .. -G "Visual Studio 17 2022" -A x64
+          cmake --build . --config Release
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lekhoni-Keyboard
+          path: build          fi
       
       - name: checkout-source
         uses: actions/checkout@v4
