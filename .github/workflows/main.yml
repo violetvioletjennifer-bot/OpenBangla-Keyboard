@@ -8,17 +8,17 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Create output folder
-      run: mkdir output
+      - name: Create output folder
+        run: mkdir output
 
-    - name: Create keyboard file
-      run: echo Lekhoni Keyboard Ready > output/lekhoni-keyboard.txt
+      - name: Create keyboard file
+        run: echo Lekhoni Keyboard Ready > output/lekhoni-keyboard.txt
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Lekhoni-Keyboard
-        path: output
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lekhoni-Keyboard
+          path: output
