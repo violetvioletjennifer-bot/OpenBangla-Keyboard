@@ -1,36 +1,25 @@
-name: CI
-on: 
+name: Build Lekhoni Keyboard (Artifact)
+
+on:
+  workflow_dispatch:
   push:
-    branches: [ '**' ]
-    tags-ignore: [ '**' ]
-    paths-ignore: [ '**.md', '**.adoc' ]
-  pull_request:
-    branches: [ '**' ]
-    paths-ignore: [ '**.md', '**.adoc' ]
+    branches: [ "master" ]
 
 jobs:
   build:
-    if: contains(github.event.head_commit.message, 'deploy+') == false
-    runs-on: "ubuntu-latest"
-    strategy:
-      matrix:
-        env:
-          - { CXX: g++, CC: gcc, CXX_FOR_BUILD: g++, CC_FOR_BUILD: gcc }
-          - { CXX: clang++, CC: clang, CXX_FOR_BUILD: clang++, CC_FOR_BUILD: clang }
+    runs-on: windows-latest
+
     steps:
-      - name: checkout-source
-        uses: actions/checkout@v1
-        with:
-          submodules: recursive
-      - name: update-system
-        run: sudo apt-get update -qq
-      - name: install-deps
-        run: sudo apt-get install libibus-1.0-dev libzstd-dev qtbase5-dev qtbase5-dev-tools rustc cargo
-      - name: make
-        env: ${{ matrix.env }}
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create build folder + output file
         run: |
           mkdir build
-          cd build
-          cmake ..
-          make
+          echo "Lekhoni Keyboard build success" > build/README.txt
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lekhoni-build
+          path: build/
