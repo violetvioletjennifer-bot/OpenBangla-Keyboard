@@ -1,4 +1,4 @@
-name: Build Lekhoni Keyboard
+name: Lekhoni Keyboard Builder
 
 on:
   workflow_dispatch:
@@ -8,17 +8,18 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout
+
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create output folder
-        run: mkdir output
+      - name: Create build folder
+        run: mkdir build
 
       - name: Create keyboard file
-        run: echo Lekhoni Keyboard Ready > output/lekhoni-keyboard.txt
+        run: echo Lekhoni Keyboard Successfully Built > build/lekhoni.txt
 
-      - name: Upload Artifact
+      - name: Upload build file
         uses: actions/upload-artifact@v4
         with:
           name: Lekhoni-Keyboard
-          path: output
+          path: build
