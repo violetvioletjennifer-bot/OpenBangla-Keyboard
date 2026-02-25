@@ -1,0 +1,35 @@
+name: Build OpenBangla Keyboard EXE
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-make
+
+      - name: Build OpenBangla Keyboard
+        shell: msys2 {0}
+        run: |
+          mkdir build
+          cd build
+          cmake -G "MinGW Makefiles" ..
+          mingw32-make
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenBangla-Keyboard-EXE
+          path: build
